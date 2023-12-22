@@ -1,5 +1,7 @@
 import React from 'react';
 import { Vortex } from 'react-loader-spinner';
+import { ColorRing } from 'react-loader-spinner';
+
 
 const AfterLoader = () => {
   // Determine the screen width
@@ -21,14 +23,14 @@ const AfterLoader = () => {
 
   return (
     <div style={loaderStyle}>
-      <Vortex
+      <ColorRing
         visible={true}
-        height="500"
-        width="500"
-        ariaLabel="vortex-loading"
+        height="100"
+        width="100"
+        ariaLabel="blocks-loading"
         wrapperStyle={{}}
-        wrapperClass="vortex-wrapper"
-        colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+        wrapperClass="blocks-wrapper"
+        colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
       />
     </div>
   );

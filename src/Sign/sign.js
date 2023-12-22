@@ -8,26 +8,20 @@ import LockIcon from '@mui/icons-material/Lock';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import EmailIcon from '@mui/icons-material/Email';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
-import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
-import Image1 from "../Image/84894079.webp";
-import Image2 from "../Image/characters-from-friends-the-office-and-it-s-always-sunny-in-philadelphia.avif";
-import Image3 from "../Image/how-to-watch-the-office-us_lead-900x506.webp";
 import { Avatar, TextField } from '@mui/material';
 import { useEffect } from "react";
 import { styled } from '@mui/material/styles';
-import Background from "../Image/BACKGROUND.jpg";
 import Background2 from "../Image/BACKGROUNDIMAGE2.avif";
-import BackupIcon from '@mui/icons-material/Backup';
 import axios from "axios";
 import 'react-responsive-modal/styles.css';
 import Modal from '@mui/material/Modal';
 import { DeviceFrameset } from 'react-device-frameset'
 import 'react-device-frameset/styles/marvel-devices.min.css';
 import StatusBar from '../MobileStatusBar/StatusBar';
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 
 const customTheme = createTheme({
     palette: {
@@ -70,40 +64,41 @@ function Sign() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(Email);
-        console.log(Password);
-        console.log(Image);
-        if (Email == "" && Password == "" && Image == "") {
-            setDataBoolean(true)
-            setOpen(true)
+        if (Email == "" && Password == "" || Email == "" || Password == "") {
+            setDataBoolean(true);
+            setOpen(true);
         }
-        // Create a FormData object
-        const formData = new FormData();
+        else {
+            // Create a FormData object
+            const formData = new FormData();
 
-        // Append email and password to the FormData object
-        formData.append("Email", Email);
-        formData.append("Password", Password);
+            // Append email and password to the FormData object
+            formData.append("Email", Email);
+            formData.append("Password", Password);
 
-        // Append each image to the FormData object
-        for (let i = 0; i < Image.length; i++) {
-            formData.append("file", Image[i]);
-        }
-        try {
-            // Send the FormData to the backend using axios
-            const response = await axios.post("http://localhost:3001/api/sign", formData);
-            if (response.data == "Registration Sucessfull") {
-                setSignBoolean(true);
+            // Append each image to the FormData object
+            for (let i = 0; i < Image.length; i++) {
+                formData.append("file", Image[i]);
             }
-            else if (response.data == "Email Already Exists") {
-                setEmailBoolean(true);
+            try {
+                // Send the FormData to the backend using axios
+                const response = await axios.post("http://localhost:3001/api/sign", formData);
+                if (response.data == "Registration Sucessfull") {
+                    setSignBoolean(true);
+                }
+                else if (response.data == "Email Already Exists") {
+                    setEmailBoolean(true);
+                }
+                // Handle the response from the backend here
+                console.log("Response from server:", response.data);
+                console.log("server:", response);
+            } catch (error) {
+                console.log("Error", error);
+                // Handle any errors here
+                console.error("Error:", error);
             }
-            // Handle the response from the backend here
-            console.log("Response from server:", response.data);
-        } catch (error) {
-            // Handle any errors here
-            console.error("Error:", error);
         }
-    };
+    }
 
     // Use useEffect to toggle the wink every 2 seconds
     useEffect(() => {
@@ -247,11 +242,13 @@ function Sign() {
                 <Grid container component="main" sx={{ minHeight: '100vh' }}>
                     <CssBaseline />
                     <Grid item xs={12} sm={6} md={6} style={{ backgroundImage: `url(${Background2})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div style={{ marginTop: "-19%", marginLeft: "10%" }}>
-                            <DeviceFrameset device="iPhone X" color="gold" zoom={0.7}>
-                                <StatusBar />
-                            </DeviceFrameset>
-                        </div>
+                        <BrowserView>
+                            <div style={{ marginTop: "-15%", marginLeft: "10%" }}>
+                                <DeviceFrameset device="iPhone X" color="gold" zoom={0.7}>
+                                    <StatusBar />
+                                </DeviceFrameset>
+                            </div>
+                        </BrowserView>
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} component={Paper} elevation={6} square><br />
                         <Box sx={containerStyle}>
@@ -296,13 +293,20 @@ function Sign() {
                                         />
                                     </div><br />
                                     {/* <Typography style={{ color: "#757374", fontFamily: "Verdana",marginLeft:"25%"}}>Upload Your Image</Typography> */}
-                                    <Box sx={{ border: 0, height: 60, boxShadow: 0, borderRadius: 3, cursor: 'pointer', backgroundColor: "white", color: "black", fontFamily: "Verdana" }}>
+                                    {/* <Box sx={{ border: 0, height: 60, boxShadow: 0, borderRadius: 3, cursor: 'pointer', backgroundColor: "white", color: "black", fontFamily: "Verdana" }}>
                                         <input type='file' style={{ marginTop: "3%", marginLeft: "17%", opacity: "0.9", color: "green" }} aria-label='Upload Your Image' onChange={(e) => setImage(e.target.files)} />
                                         <BackupIcon sx={{ marginTop: -7, marginLeft: 2 }} />
-                                    </Box>
-                                    <Box sx={{ border: 1, height: 50, boxShadow: 1, borderRadius: 3, cursor: 'pointer', backgroundColor: "black", color: "white", fontFamily: "Verdana" }} onClick={handleSubmit}>
-                                        <Typography sx={{ marginLeft: 19, marginTop: 1.7 }}>Sign Up</Typography>
-                                    </Box>
+                                    </Box> */}
+                                    <BrowserView>
+                                        <Box sx={{ border: 1, height: 50, boxShadow: 1, borderRadius: 3, cursor: 'pointer', backgroundColor: "black", color: "white", fontFamily: "Verdana" }} onClick={handleSubmit}>
+                                            <Typography sx={{ marginLeft: 19, marginTop: 1.7 }}>Sign Up</Typography>
+                                        </Box>
+                                    </BrowserView>
+                                    <MobileView>
+                                        <Box sx={{ border: 1, height: 50, boxShadow: 1, borderRadius: 3, cursor: 'pointer', backgroundColor: "black", color: "white", fontFamily: "Verdana" }} onClick={handleSubmit}>
+                                            <Typography sx={{ marginLeft: 12, marginTop: 1.7 }}>Sign Up</Typography>
+                                        </Box>
+                                    </MobileView>
                                     <Grid container>
                                         <Grid item>
                                             <Link href="/" variant="body2" style={{ color: "#AD2091", textDecoration: "none", fontFamily: "Verdana" }}>
